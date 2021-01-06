@@ -1,5 +1,10 @@
 declare class Parser {
-    parse(str: string): {};
+    parse(str: string): {
+        [x: string]: {
+            name: string;
+            type: string;
+        }[];
+    }[];
     convertDataInsideCurlyBranceIntoStructure(str: string): {
         name: string;
         type: string;

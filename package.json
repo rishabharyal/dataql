@@ -1,0 +1,19 @@
+{
+  "name": "dataql",
+  "version": "1.0.0",
+  "description": "Generate data that you can test based on graphQL Query",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rishabharyal/dataql.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rishabharyal/dataql/issues"
+  },
+  "homepage": "https://github.com/rishabharyal/dataql#readme"
+}

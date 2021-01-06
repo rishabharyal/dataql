@@ -5,12 +5,13 @@ var Parser = /** @class */ (function () {
     }
     Parser.prototype.parse = function (str) {
         var exploded = str.trim().split('type');
+        var data = [];
         for (var i = 1; i < exploded.length; i++) {
             var gqlType = exploded[i];
             var contentInsideBrance = this.getDataInsideCurlyBrace(gqlType);
-            console.log(contentInsideBrance);
+            data.push(contentInsideBrance);
         }
-        return {};
+        return data;
     };
     Parser.prototype.convertDataInsideCurlyBranceIntoStructure = function (str) {
         var strArray = str.split('\n');
@@ -18,7 +19,7 @@ var Parser = /** @class */ (function () {
         for (var i = 0; i < strArray.length; i++) {
             var explode = strArray[i].split(':');
             output.push({
-                name: explode[0].trim(),
+                name: explode[0].trim().firstWord(),
                 type: explode[1].trim(),
             });
         }
