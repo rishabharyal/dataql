@@ -106,7 +106,7 @@ var Build = /** @class */ (function () {
     };
     return Build;
 }());
-var buildOb = new Build("\ntype Query {\n\thuman(id: ID!): Human\n\tepisode: Episode\n}\n\ntype Human {\n\tname: String\n\tappearsIn: Episode\n\tstarships: [Starship]\n}\n\ntype Episode {\n\tid: Integer\n\tname: String\n}\n\ntype Starship {\n\tname: String\n}\n");
+var buildOb = new Build("\ntype Query {\n\thuman(id: ID!): Human\n\tepisode: Episode\n}\n\ntype Human {\n\tname: String\n\tappearsIn: [Episode]\n\tstarships: [Starship]\n}\n\ntype Episode {\n\tid: Integer\n\tname: String\n}\n\ntype Starship {\n\tname: String\n}\n");
 buildOb.transform("{\n\thuman(id: 1002) {\n\t  name\n\t  appearsIn {\n\t\t  id\n\t\t  name\n\t  }\n\t  starships {\n\t\t  name\n\t  }\n\t}}");
 // should return like this:
 /**

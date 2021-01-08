@@ -139,7 +139,7 @@ type Query {
 
 type Human {
 	name: String
-	appearsIn: Episode
+	appearsIn: [Episode]
 	starships: [Starship]
 }
 
