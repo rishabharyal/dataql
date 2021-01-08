@@ -20,48 +20,94 @@ var Build = /** @class */ (function () {
         this.isBuild = true;
     };
     Build.prototype.buildQuery = function (query) {
-        this.payLoadBuild = this.parser.parse(query);
+        this.payLoadBuild = this.parser.parsePayload(query);
     };
     Build.prototype.transform = function (graphStr) {
+        var _a;
         if (this.isBuild === false) {
             this.build();
         }
         this.buildQuery(graphStr);
-        var returnData = [];
-        return true;
+        var data = this.payLoadBuild;
+        var key = data.key;
+        data = {
+            data: (_a = {},
+                _a[key] = this.fillData(this.payLoadBuild.children, this.findInQuery(key)),
+                _a)
+        };
+        console.log(data);
+        return data;
     };
-    Build.prototype.generate = function (str) {
-        str = str.toUpperCase();
-        var value = null;
-        switch (str) {
-            case 'STRING': {
-                value = 'Rishabh';
+    Build.prototype.fillData = function (data, parent) {
+        var dataReturn = {};
+        for (var i = 0; i < data.length; i++) {
+            var datum = data[i];
+            if (datum.children === undefined) {
+                dataReturn[datum.key] = this.generate(parent[datum.key]);
+                continue;
             }
-            case 'INTEGER': {
+            var type = this.resolveType(parent[datum.key]);
+            if (type.multiple === false) {
+                dataReturn[datum.key] = this.fillData(datum.children, type.type);
+            }
+            else {
+                dataReturn[datum.key] = [];
+                for (var j = 0; i <= Math.floor(Math.random() * 10);) {
+                    dataReturn[datum.key].push(this.fillData(datum.children, type.type));
+                }
+            }
+        }
+        return dataReturn;
+    };
+    Build.prototype.resolveType = function (key) {
+        var multiple = false;
+        if (key.startsWith('[')) {
+            key = key.replace('[', '');
+            key = key.replace(']', '');
+            multiple = true;
+        }
+        return {
+            type: this.graphBuild[key],
+            multiple: multiple
+        };
+    };
+    Build.prototype.findInQuery = function (key) {
+        var Query = this.graphBuild.Query[key];
+        return this.graphBuild[Query];
+    };
+    Build.prototype.generate = function (source) {
+        var value = null;
+        switch (source.toUpperCase()) {
+            case 'STRING' || 'STRING!': {
+                value = 'Rishabh';
+                break;
+            }
+            case 'INTEGER' || 'INTEGER!': {
                 value = 10;
+                break;
             }
             case 'BOOLEAN': {
                 value = true;
+                break;
             }
             case 'FLOAT': {
                 value = 1.11;
+                break;
             }
             case 'DECIMAL': {
                 value = 2.22;
+                break;
             }
-            case 'INSIDE': {
-                // handle the objects and stuffs...
+            default: {
+                value = undefined;
             }
         }
         return value;
     };
-    Build.prototype.log = function () {
-        console.log(this.graph);
-    };
     return Build;
 }());
-var buildOb = new Build("\ntype Query {\n\thuman(id: ID!): Human\n}\n\ntype Human {\n\tname: String\n\tappearsIn: [Episode]\n\tstarships: [Starship]\n}\n\ntype Episode {\n\tname: String\n}\n\ntype Starship {\n\tname: String\n}\n");
-console.log(buildOb.transform("{\n\thuman(id: 1002) {\n\t  name\n\t  appearsIn\n\t  starships {\n\t\tname\n\t  }\n\t}\n  }"));
+var buildOb = new Build("\ntype Query {\n\thuman(id: ID!): Human\n\tepisode: Episode\n}\n\ntype Human {\n\tname: String\n\tappearsIn: Episode\n\tstarships: [Starship]\n}\n\ntype Episode {\n\tid: Integer\n\tname: String\n}\n\ntype Starship {\n\tname: String\n}\n");
+buildOb.transform("{\n\thuman(id: 1002) {\n\t  name\n\t  appearsIn {\n\t\t  id\n\t\t  name\n\t  }\n\t  starships {\n\t\t  name\n\t  }\n\t}}");
 // should return like this:
 /**
  * {
